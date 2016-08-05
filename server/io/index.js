@@ -10,8 +10,14 @@ module.exports = function (server) {
 
     io.on('connection', function () {
         // Now have access to socket, wowzers!
+
     });
-    
+
+    // io.on('connection', function (socket) {
+    //     socket.emit('getLocation', socket.id);
+
+    // });
+
     return io;
 
 };

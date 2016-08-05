@@ -1,0 +1,195 @@
+<!-- THIS IS THE ORGINAL WITH SOCKETS -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/" />
+    <title>Fullstack Academy Generated Application</title>
+    <link rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <script src="https://www.gstatic.com/firebasejs/3.2.1/firebase.js"></script>
+    <script src="/lodash/index.js"></script>
+    <script src="/angular/angular.js"></script>
+    <script src="/angular-animate/angular-animate.js"></script>
+    <script src="/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="/angular-ui-bootstrap/ui-bootstrap.js"></script>
+    <script src="/angular-ui-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="/socket.io-client/socket.io.js"></script>
+    <script src="/main.js"></script>
+
+
+
+    <!-- GOOGLE DIRECTIONS -->
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+
+    <title>Directions service</title>
+
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+      #floating-panel {
+        position: absolute;
+        top: 10px;
+        left: 25%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+    </style>
+
+</head>
+
+<body ng-app="FullstackGeneratedApp">
+
+<!--   <div id="floating-panel">
+
+    <b>Start: </b>
+    <select id="start">
+      <option value="chicago, il">Chicago</option>
+      <option value="st louis, mo">St Louis</option>
+      <option value="joplin, mo">Joplin, MO</option>
+      <option value="oklahoma city, ok">Oklahoma City</option>
+      <option value="amarillo, tx">Amarillo</option>
+      <option value="gallup, nm">Gallup, NM</option>
+      <option value="flagstaff, az">Flagstaff, AZ</option>
+      <option value="winona, az">Winona</option>
+      <option value="kingman, az">Kingman</option>
+      <option value="barstow, ca">Barstow</option>
+      <option value="san bernardino, ca">San Bernardino</option>
+      <option value="los angeles, ca">Los Angeles</option>
+    </select>
+
+    <b>End: </b>
+    <select id="end">
+      <option value="chicago, il">Chicago</option>
+      <option value="st louis, mo">St Louis</option>
+      <option value="joplin, mo">Joplin, MO</option>
+      <option value="oklahoma city, ok">Oklahoma City</option>
+      <option value="amarillo, tx">Amarillo</option>
+      <option value="gallup, nm">Gallup, NM</option>
+      <option value="flagstaff, az">Flagstaff, AZ</option>
+      <option value="winona, az">Winona</option>
+      <option value="kingman, az">Kingman</option>
+      <option value="barstow, ca">Barstow</option>
+      <option value="san bernardino, ca">San Bernardino</option>
+      <option value="los angeles, ca">Los Angeles</option>
+    </select>
+
+  </div> -->
+
+  <div id="map"></div>
+
+
+  <script>
+      // I know, I know, I don't like have global variables either.
+      var socket = io('http://192.168.2.219:1337');
+      var map;
+      var marker;
+      var dummyMarker;
+      var directionsService;
+      var directionsDisplay;
+
+      // Create a map
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 40.7128, lng: -74.0059},
+          zoom: 10
+        });
+        marker = new google.maps.Marker({
+          map: map,
+          title:"You are here!"
+        });
+        // marker.metadata = { id: 'start' };
+        dummyMarker = new google.maps.Marker({
+          position: {lat: 40.8128, lng: -74.0059},
+          map: map,
+          title:"You are here!"
+        });
+        // dummyMarker.metadata = { id: 'end' };
+        directionsService = new google.maps.DirectionsService;
+        directionsDisplay = new google.maps.DirectionsRenderer;
+        directionsDisplay.setMap(map);
+      }
+
+      socket.on('getLocation', function(data) {
+        // Which socket am I? Oh yeah! This one...
+        console.log(data);
+
+        // Get my location, please
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(handleLocationSuccess, function() {
+              handleLocationError(true, marker, map.getCenter());
+            });
+        } else {
+          handleLocationError(false, marker, map.getCenter);
+        }
+
+      });
+
+      // Geolocation success/error handling
+      function handleLocationSuccess(position) {
+        var coords = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        map.setCenter(coords);
+        marker.setPosition(coords);
+      }
+
+      function handleLocationError(browserHasGeolocation, marker, pos) {
+        marker.setPosition(pos);
+        marker.setContent(browserHasGeolocation ?
+                        'Error: The Geolocation service failed.' :
+                        'Error: Your browser doesn\'t support geolocation.');
+      }
+
+
+
+      // getDirections();
+
+      // Google directions
+      function getDirections() {
+
+        var onChangeHandler = function() {
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+        };
+
+        // Can I listen for a marker that I set through the script tag???
+        // 'start' = user1; 'end' = user2;
+        // Would it be better to just store the coordinates in a database and then get directions via the database rather than the markers on the map?
+        document.getElementById('start').addEventListener('change', onChangeHandler);
+        document.getElementById('end').addEventListener('change', onChangeHandler);
+      };
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        directionsService.route({
+          origin: document.getElementById('start').value, // user1 coordinates
+          destination: document.getElementById('end').value, // user2 coordinates
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      };
+
+  </script>
+
+    <!-- <navbar></navbar> -->
+    <!-- <div id="main" ui-view></div> -->
+
+    <!-- GOOGLE SRC  -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuPZ9vV76biNnQaD1sMsjPxoHssKo2iHc&callback=initMap"></script>
+</body>
+</html>
