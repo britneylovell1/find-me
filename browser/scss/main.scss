@@ -4,6 +4,7 @@
 
 body {
   background: #fdfdfd;
+  height: 100%;
 }
 
 @mixin clearfix {
@@ -17,8 +18,24 @@ body {
 #main {
   padding-top: 60px;
   margin: 0 auto;
+  padding-bottom: 60px
+}
+
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -60px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+
 }
 
 @import 'directives/main';
 @import 'home/main';
 @import 'map/main';
+

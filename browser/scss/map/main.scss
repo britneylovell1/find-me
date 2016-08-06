@@ -1,11 +1,14 @@
-html, body {
-    height: 100%;
+html {
+    min-height: 100%;
+    postition:relative;
     margin: 0;
     padding: 0;
 }
 #map {
     height: 100%;
+    z-index: 1;
 }
+
 #floating-panel {
     position: absolute;
     top: 10px;
@@ -19,3 +22,4 @@ html, body {
     line-height: 30px;
     padding-left: 10px;
 }
+

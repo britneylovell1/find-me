@@ -37,26 +37,16 @@ navbar {
     }
   }
 
-  .login-button {
-    float: right;
+  .nav-button {
     border: 1px solid black;
     margin-top: 10px;
     background: none;
     outline: none !important;
   }
 
-  .welcome {
+  .help {
     float: right;
-    margin-top: 12px;
-    span {
-      color: black;
-      font-size: 16px;
-      margin-right: 5px;
-    }
-    a {
-      color: #f30046;
-      cursor: pointer;
-    }
+    margin-top: 10px;
   }
 
 }
