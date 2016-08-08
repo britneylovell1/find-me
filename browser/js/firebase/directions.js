@@ -1,9 +1,6 @@
 // Google directions
 
-// Update directions everytime a user's location changes
-
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-    // console.log('in calculateAndDisplayRoute');
 
     var marco;
     var polo;
@@ -16,17 +13,21 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
             userArray.push(user.val());
         });
 
-        // marco = new google.maps.LatLng(userArray[0].lat, userArray[0].lng);
-        // polo = new google.maps.LatLng(userArray[1].lat, userArray[1].lng);
+        if (userArray.length === 1) {
+            return;
+        }
 
-        marco = userArray[0].address;
-        polo = userArray[1].address;
+        marco = userArray[0].coordinates;
+        polo = userArray[1].coordinates;
 
     });
 
+    // Don't get directions if there isn't a second person
+    if (!polo) {
+        return;
+    }
+    console.log('calculating')
 
-
-    // How do I access the coordinates for each user here?
     directionsService.route({
             origin: marco,
             destination: polo,

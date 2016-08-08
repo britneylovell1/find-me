@@ -14,18 +14,9 @@
         </div> -->
 
 
-        <div class="navbar-nav btn nav-button">
-            <a ui-sref-active="active" ui-sref="home">Find Me</a>
-        </div>
+        <button ng-click="marco()" class="navbar-nav btn nav-button">Marco</button>
 
-        <!-- just a place-holder for now. change state to help -->
-        <!-- <div class="help btn nav-button">
-            <a ui-sref-active="active">Send Location</a>
-        </div> -->
-
-
-
-        <button ng-show="!sent" ng-click="sent = !sent" class="help btn nav-button">Send Location</button>
+        <button ng-show="!sent" ng-click="sent = !sent" class="help btn nav-button">Polo</button>
 
         <div ng-show="sent" class="help">
             <span>{{ locationLink }}</span>

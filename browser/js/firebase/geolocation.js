@@ -1,70 +1,97 @@
 // Google Geolocation
 
-function getLocation(user, marker) {
-
+function getCurrentLocation() {
     // Get my current location, please
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
 
-            youFoundMe(user, position);
+            youFoundMe(user, marker, position);
 
         }, function() {
 
-            handleLocationError(true, map.getCenter());
+            handleLocationError(true, marker, map.getCenter());
 
         });
     } else {
 
-        handleLocationError(false, map.getCenter());
+        handleLocationError(false, marker, map.getCenter());
+
+    }
+}
+
+function getLocation(user, marker) {
+    // var marker = new google.maps.Marker({
+    //     map: map
+    // });
+
+    // Get my current location, please
+    // if (navigator.geolocation) {
+    //     navigator.geolocation.getCurrentPosition(function(position) {
+
+    //         youFoundMe(user, marker, position);
+
+    //     }, function() {
+
+    //         handleLocationError(true, marker, map.getCenter());
+
+    //     });
+    // } else {
+
+    //     handleLocationError(false, marker, map.getCenter());
+
+    // }
+
+    console.log('in get location')
+
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(function(position) {
+
+            youFoundMe(user, marker, position);
+
+        }, function() {
+
+            handleLocationError(true, marker, map.getCenter());
+
+        });
+    } else {
+
+        handleLocationError(false, marker, map.getCenter());
 
     }
 };
 
 // Geolocation success/error handlers
-function youFoundMe(user, position) {
+function youFoundMe(user, marker, position) {
+    // console.log('user ', user)
 
-    // Convert current location to coordinates
-    var coords = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
 
-    // Check if coords are a Google-approved address
-    geocoder.geocode({'latLng': coords}, function(results, status) {
+    // Set marker on map
+    // marker.setPosition(pos);
+    // map.setCenter(pos);
 
-    if (status == google.maps.GeocoderStatus.OK) {
 
-      // If the geolocation was recognized and an address was found
-      if (results[0]) {
-
-        // Compose a string with the address parts
-        var address = results[0].address_components[1].long_name+' '+results[0].address_components[0].long_name+', '+results[0].address_components[3].long_name
-
-        // Update user's address in firebase
-        firebase.database().ref('users/' + user).update({
-            address: address
-        });
-
-      }
-    } else {
-
-      // if the address couldn't be determined, alert and error with the status message
-      alert("Geocoder failed due to: " + status);
-
-    }
-
-  });
-
+    // Update user's address in firebase
+    firebase.database().ref('users/' + user).update({
+        coordinates: pos
+    });
 }
 
-function handleLocationError(browserHasGeolocation, pos) {
+function handleLocationError(browserHasGeolocation, marker, pos) {
 
     // Set marker on default position on map
-    var marker = new google.maps.Marker({
-            position: pos,
-            map: map,
-            content: browserHasGeolocation ?
-                'Error: The Geolocation service failed.' :
-                'Error: Your browser doesn\'t support geolocation.'
-          });
+    // var marker = new google.maps.Marker({
+    //         position: pos,
+    //         map: map,
+    //         content: browserHasGeolocation ?
+    //             'Error: The Geolocation service failed.' :
+    //             'Error: Your browser doesn\'t support geolocation.'
+    //       });
 
+    marker.setPosition(pos);
     // marker.setContent(browserHasGeolocation ?
     //         'Error: The Geolocation service failed.' :
     //         'Error: Your browser doesn\'t support geolocation.');

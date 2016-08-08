@@ -12,24 +12,47 @@
     <script src="/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="/angular-ui-bootstrap/ui-bootstrap.js"></script>
     <script src="/angular-ui-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="/socket.io-client/socket.io.js"></script>
+    <script src="/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
+    <!-- <script src="/angular-google-maps/dist/angular-google-maps.js"></script> -->
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyDuPZ9vV76biNnQaD1sMsjPxoHssKo2iHc"></script>
+    <script src="/ngmap/build/scripts/ng-map.min.js"></script>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuPZ9vV76biNnQaD1sMsjPxoHssKo2iHc"></script> -->
+    <!-- <script src="/socket.io-client/socket.io.js"></script> -->
+    <!-- <script src="/map-icons.js"></<s></s>cript> -->
     <script src="/main.js"></script>
 
     <!-- GOOGLE DIRECTIONS -->
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Simple Map">
+    <meta name="keywords" content="ng-map,AngularJS,center">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta charset="utf-8">
-    <title>Directions service</title>
 
 </head>
 
 <body ng-app="FullstackGeneratedApp">
-  <div id="wrap">
-    <navbar></navbar>
-    <div id="map"></div>
-  </div>
 
+  <div id="wrap" ng-controller="MapCtrl">
+    <navbar></navbar>
+
+    <div >
+      <ng-map id="map"
+        center="40.7128,-74.0059" zoom="6"
+        pan-control="true"
+        pan-control-options="{position:'TOP_RIGHT'}"
+        map-type-control="true"
+        map-type-control-options="{style:'HORIZONTAL_BAR', position:'BOTTOM_CENTER'}"
+        zoom-control="true"
+        zoom-control-options="{style:'LARGE', position:'LEFT_CENTER'}"
+        scale-control="true"
+        street-view-control="true"
+        street-view-control-options="{position:'LEFT_TOP'}">
+      </ng-map>
+    </div>
+
+  </div>
+  <!-- <ui-view></ui-view> -->
 
     <!-- GOOGLE SRC  -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuPZ9vV76biNnQaD1sMsjPxoHssKo2iHc&callback=initMap"></script>
+    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuPZ9vV76biNnQaD1sMsjPxoHssKo2iHc&callback=initMap"></script> -->
 </body>
 </html>
